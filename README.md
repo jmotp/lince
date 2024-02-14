@@ -1,5 +1,5 @@
 # lince
-![logo](https://github.com/jmotp/lince/assets/12650512/65d3bc0f-87fb-462b-9d37-7c9ab0dd47bc)
+![logo_inverted](https://github.com/jmotp/lince/assets/12650512/22e1eef5-df80-4261-b1af-a147acbc27b6)
 Firmware for the Linked Industrial Controller platform
 
 Repository to track firmware development of the Lince Platform. 

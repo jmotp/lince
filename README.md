@@ -27,6 +27,7 @@ Lince can be powered via:
 - USB-C (5V)
 - CAN Screw Terminals and Connectors (12 to 24V)
 
+![image](https://github.com/jmotp/lince/assets/12650512/bff662b7-57d5-4c93-8be2-32acbcfdbf82)
 
 
 

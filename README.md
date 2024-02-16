@@ -4,7 +4,7 @@ Firmware for the Linked Industrial Controller platform
 
 Repository to track firmware development of the Lince Platform. 
 
-Lince is a development board designed around the TM4C129E microcontroller. It contains interfaces that enables it to connect, read and control industrial sensors and actuators according to IEC61131-2.
+Lince is a development board designed around the TM4C129E microcontroller. It contains interfaces that enable it to connect, read, and control industrial sensors and actuators according to IEC61131-2.
 
 List of Interfaces: 
 
@@ -13,7 +13,7 @@ List of Interfaces:
 - 4 Analog Inputs which can be calibrated for up to 24V.
 - 4 Analog Outputs via PWM
 - 2 Independent CAN Interfaces (DB9 and screw terminals)
-- 1 USB-C Connector for flashing, powering and communication
+- 1 USB-C Connector for flashing, powering, and communication
 - 1 10/100 RJ45 Ethernet Connector 
 - 1 RS-485 interface via screw terminals
 - 1 SPI interface for up to 3 devices
@@ -26,6 +26,8 @@ Lince can be powered via:
 - Screw Terminals (5 to 48V)
 - USB-C (5V)
 - CAN Screw Terminals and Connectors (12 to 24V)
+
+The firmware is built around TI-RTOS (https://www.ti.com/tool/TI-RTOS-MCU).
 
 ![image](https://github.com/jmotp/lince/assets/12650512/bff662b7-57d5-4c93-8be2-32acbcfdbf82)
 

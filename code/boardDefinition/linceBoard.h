@@ -88,6 +88,10 @@ typedef enum EK_TM4C129EXL_GPIOName {
     LINCE_GPIOCOUNT
 } EK_TM4C129EXL_GPIOName;
 
+
+int initADC();
+uint32_t readADC();
+
 /*!
  *  @def    EK_TM4C129EXL_I2CName
  *  @brief  Enum of I2C names on the EK_TM4C129EXL dev board

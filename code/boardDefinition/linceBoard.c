@@ -168,6 +168,73 @@ void EK_TM4C129EXL_initGeneral(void)
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOT);
 }
 
+
+/*
+ *  =============================== ADC ================================
+ *
+ */
+
+#if defined(__TI_COMPILER_VERSION__)
+#pragma DATA_SECTION(ADC_config, ".const:ADC_config")
+#pragma DATA_SECTION(adcHWAttrs, ".const:adcHWAttrs")
+#endif
+
+#include <driverlib/adc.h>
+
+
+
+int initADC(){
+    GPIOPinTypeADC(GPIO_PORTE_BASE, GPIO_PIN_0);
+    GPIOPinTypeADC(GPIO_PORTE_BASE, GPIO_PIN_1);
+    GPIOPinTypeADC(GPIO_PORTE_BASE, GPIO_PIN_2);
+    GPIOPinTypeADC(GPIO_PORTE_BASE, GPIO_PIN_3);
+
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_ADC0);
+    SysCtlDelay(3);
+    ADCReferenceSet(ADC0_BASE, ADC_REF_INT);
+    ADCSequenceConfigure(ADC0_BASE, 2, ADC_TRIGGER_PROCESSOR, 0);
+    ADCSequenceStepConfigure(ADC0_BASE, 2, 0, ADC_CTL_CH0);
+    ADCSequenceStepConfigure(ADC0_BASE, 2, 1, ADC_CTL_CH1);
+    ADCSequenceStepConfigure(ADC0_BASE, 2, 2, ADC_CTL_CH2);
+    ADCSequenceStepConfigure(ADC0_BASE, 2, 3, ADC_CTL_CH3 | ADC_CTL_IE | ADC_CTL_END);
+
+    ADCSequenceEnable(ADC0_BASE, 2);
+    ADCIntClear(ADC0_BASE, 2);
+
+    return 0;
+}
+
+
+uint32_t readADC(){
+    uint32_t ADCValues[4];
+    ADCProcessorTrigger(ADC0_BASE, 2);
+   //
+   // Wait for conversion to be completed.
+   //
+   while(!ADCIntStatus(ADC0_BASE, 2, false))
+   {
+
+   }
+
+   //
+   // Clear the ADC interrupt flag.
+   //
+   ADCIntClear(ADC0_BASE, 2);
+
+   //
+   // Read ADC Value.
+   //
+   ADCSequenceDataGet(ADC0_BASE, 2, ADCValues);
+   int i = 0;
+   for(;i<4;i++){
+       System_printf("CH%d : %d ",i,ADCValues[i]);
+   }
+   System_flush();
+
+   return ADCValues[0];
+}
+
+
 /*
  *  =============================== EMAC ===============================
  */
@@ -180,8 +247,11 @@ void EK_TM4C129EXL_initGeneral(void)
 
 #include <ti/drivers/EMAC.h>
 #include <ti/drivers/emac/EMACSnow.h>
+#include <driverlib/emac.h>
 
 /*
+ *
+ *
  *  Required by the Networking Stack (NDK). This array must be NULL terminated.
  *  This can be removed if NDK is not used.
  *  Double curly braces are needed to avoid GCC bug #944572
@@ -257,6 +327,8 @@ void EK_TM4C129EXL_initEMAC(void)
         System_abort("Change the macAddress variable to match your boards MAC sticker");
     }
 
+    //EMACPHY(EMAC0_BASE, EMAC_PHY_ADDR, EPHY_, ui16Data)
+
     GPIOPinConfigure(GPIO_PK4_EN0LED0);  /* EK_TM4C129EXL_USR_D3 */
     GPIOPinConfigure(GPIO_PK6_EN0LED1);  /* EK_TM4C129EXL_USR_D4 */
     GPIOPinTypeEthernetLED(GPIO_PORTK_BASE, GPIO_PIN_4 | GPIO_PIN_6);
@@ -291,13 +363,13 @@ GPIO_PinConfig gpioPinConfigs[] = {
     //DBG_LED_2
     GPIOTiva_PB_2 | GPIO_CFG_OUT_STD |  GPIO_CFG_OUT_STR_HIGH | GPIO_CFG_OUT_LOW,
     //DIGITAL_OUT_1_1,
-    GPIOTiva_PM_2 | GPIO_CFG_OUT_STD |  GPIO_CFG_OUT_STR_HIGH | GPIO_CFG_OUT_LOW,
-    //DIGITAL_OUT_1_2,
-    GPIOTiva_PM_1 | GPIO_CFG_OUT_STD |  GPIO_CFG_OUT_STR_HIGH | GPIO_CFG_OUT_LOW,
-    //DIGITAL_OUT_1_3,
-    GPIOTiva_PM_0 | GPIO_CFG_OUT_STD |  GPIO_CFG_OUT_STR_HIGH | GPIO_CFG_OUT_LOW,
-    //DIGITAL_OUT_1_4,
     GPIOTiva_PL_0 | GPIO_CFG_OUT_STD |  GPIO_CFG_OUT_STR_HIGH | GPIO_CFG_OUT_LOW,
+    //DIGITAL_OUT_1_2,
+    GPIOTiva_PM_0 | GPIO_CFG_OUT_STD |  GPIO_CFG_OUT_STR_HIGH | GPIO_CFG_OUT_LOW,
+    //DIGITAL_OUT_1_3,
+    GPIOTiva_PM_1 | GPIO_CFG_OUT_STD |  GPIO_CFG_OUT_STR_HIGH | GPIO_CFG_OUT_LOW,
+    //DIGITAL_OUT_1_4,
+    GPIOTiva_PM_2 | GPIO_CFG_OUT_STD |  GPIO_CFG_OUT_STR_HIGH | GPIO_CFG_OUT_LOW,
     //DIGITAL_OUT_2_1,
     GPIOTiva_PF_3 | GPIO_CFG_OUT_STD |  GPIO_CFG_OUT_STR_HIGH | GPIO_CFG_OUT_LOW,
     //DIGITAL_OUT_2_2,

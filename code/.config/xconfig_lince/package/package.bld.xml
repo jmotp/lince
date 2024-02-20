@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<!--  This file conforms to the DTD xdc/bld/build.dtd -->
+<package name="xconfig_lince" version="" producerId="undefined">
+    <units>
+    </units>
+    <sources>
+        <srcFile name="package/cfg/lince_pem4f.c"/>
+    </sources>
+    <configscripts>
+        <srcFile name="C:/Users/jmotp/OneDrive/Documentos/GitHub/lince/code/lince.cfg"/>
+    </configscripts>
+    <makefiles>
+        <srcFile name="package.mak" src="package.bld"/>
+        <srcFile name="package/package.xdc.dep" src="package.xdc"/>
+        <srcFile name="package/cfg/lince_pem4f.mak" src="package.bld"/>
+        <srcFile name="package/cfg/lince_pem4f.oem4f.dep" src="package/cfg/lince_pem4f.c"/>
+        <srcFile name="package/cfg/lince_pem4f.dep" src="package/cfg/lince_pem4f.cfg"/>
+        <srcFile name="package/cfg/lince.xem4f.mak" src="package.bld"/>
+        <srcFile name="package/rel/xconfig_lince.tar.dep" src="package/rel/xconfig_lince.xdc.inc"/>
+    </makefiles>
+    <targets>
+        <target name="ti.targets.arm.elf.M4F"
+            version="ti.targets.arm.elf.M4F{1,0,20.2,7"
+            rawVersion="20.2.7"
+            platform="ti.platforms.tiva:TM4C1294NCPDT:1"
+            isa="v7M4"
+            suffix="em4f"
+            rootDir="C:/ti/ccs1260/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS"
+            os="undefined"
+            rts="ti.targets.arm.rtsarm">
+            <model endian="little"
+                codeModel="thumb2"
+                dataModel="undefined"/>
+        </target>
+    </targets>
+    <libraries>
+    </libraries>
+    <configurations>
+    <configuration name="lince"
+        pname="lince.pem4f"
+        target="ti.targets.arm.elf.M4F"
+        platform="ti.platforms.tiva:TM4C129ENCPDT"
+        profile="release"
+        isPartial="false"
+        xCfgScript="package/cfg/lince_pem4f.cfg"
+        xCfgPrefix="package/cfg/lince_pem4f"
+        cfgScript="C:/Users/jmotp/OneDrive/Documentos/GitHub/lince/code/lince.cfg"
+        cfgArgs="null"
+        />
+    </configurations>
+    <executables>
+    <executable name="lince"
+        pname="lince.xem4f"
+        target="ti.targets.arm.elf.M4F"
+        platform="ti.platforms.tiva:TM4C129ENCPDT"
+        profile="release"
+        xCfgScript="package/cfg/lince_pem4f.cfg"
+        xCfgPrefix="package/cfg/lince_pem4f"
+        cfgScript="C:/Users/jmotp/OneDrive/Documentos/GitHub/lince/code/lince.cfg"
+        cfgArgs="null"
+        />
+    </executables>
+    <tests>
+    <test exeName="lince.xem4f"
+        args=""
+        groupName="lince.xem4f"
+        refOutput="undefined"
+        refExitCode="0"
+        execArgs=""
+        />
+    </tests>
+    <releases relDir="package/rel/">
+    <release name="xconfig_lince"
+        pname="xconfig_lince.tar"
+        label="default"
+    >
+        <file name="package/package.bld.xml"/>
+        <file name="package/build.cfg"/>
+        <file name="package/package.xdc.inc"/>
+    </release>
+    </releases>
+    <repositories>
+    </repositories>
+</package>

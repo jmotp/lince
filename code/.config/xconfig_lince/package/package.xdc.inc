@@ -1,0 +1,12 @@
+package.xdc
+package.xs
+package/xconfig_lince.sch
+package/.vers_g180
+package/.vers_r170
+package/.vers_b160
+package/.xdc-B06
+package/xconfig_lince.java
+package/xconfig_lince.class
+package/package_xconfig_lince.c
+package/package.defs.h
+package/xconfig_lince.ccs

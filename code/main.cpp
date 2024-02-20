@@ -57,8 +57,8 @@
 #include "boardDefinition/pinCfg.h"
 #define TASKSTACKSIZE   512
 
-Task_Struct task0Struct;
-Char task0Stack[TASKSTACKSIZE];
+Task_Struct task0Struct, readTaskStruct;
+Char task0Stack[TASKSTACKSIZE], task1Stack[TASKSTACKSIZE];
 
 /*
  *  ======== heartBeatFxn ========
@@ -75,6 +75,20 @@ Void heartBeatFxn(UArg arg0, UArg arg1)
             Task_sleep(100);
             GPIO_toggle(i);
         }
+        uint32_t value = readADC();
+    }
+}
+
+Void readDigitalInputs(){
+    while(1){
+        Task_sleep(1000);
+        uint8_t read = 0;
+        int i;
+        for(i=DIGITAL_IN_1; i<= DIGITAL_IN_8;i++){
+            read = read << 1 | GPIO_read(i);
+        }
+        System_printf("%d\n", read);
+        System_flush();
     }
 }
 
@@ -99,7 +113,7 @@ int main(void){
 
     //PortFunctionInit();
 
-
+    initADC();
 
 
     /* Construct heartBeat Task  thread */
@@ -109,6 +123,11 @@ int main(void){
     taskParams.stack = &task0Stack;
     Task_construct(&task0Struct, (Task_FuncPtr)heartBeatFxn, &taskParams, NULL);
 
+
+    Task_Params_init(&taskParams2);
+    taskParams2.stackSize = 512;
+    taskParams2.stack = &task1Stack;
+    Task_construct(&readTaskStruct, (Task_FuncPtr)readDigitalInputs, &taskParams2, NULL);
 
 
 

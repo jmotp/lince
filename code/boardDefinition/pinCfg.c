@@ -210,6 +210,7 @@ PortFunctionInit(void)
     //
     MAP_GPIOPinTypeGPIOInput(GPIO_PORTL_BASE, GPIO_PIN_5);
 
+
     //
     // Enable pin PL0 for GPIOOutput
     //

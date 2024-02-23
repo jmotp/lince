@@ -50,8 +50,12 @@ SECTIONS
     .pinit  :   > FLASH
     .init_array : > FLASH
 
+	.vtable :   > SRAM
     .data   :   > SRAM
     .bss    :   > SRAM
     .sysmem :   > SRAM
     .stack  :   > SRAM
 }
+
+
+__STACK_TOP = __stack + 1024;

@@ -37,9 +37,17 @@
 #include <xdc/std.h>
 #include <xdc/runtime/System.h>
 
+#define xdc__nolocalstring
+
+#include <driverlib/sysctl.h>
+#include <ModuleCommunications/Can.h>
+#include "ModuleCommunications/NetReceive.h"
+
 /* BIOS Header files */
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Task.h>
+
+
 
 /* TI-RTOS Header files */
 // #include <ti/drivers/EMAC.h>
@@ -52,13 +60,22 @@
 // #include <ti/drivers/Watchdog.h>
 // #include <ti/drivers/WiFi.h>
 
-/* Board Header file */
 #include "Board.h"
 #include "boardDefinition/pinCfg.h"
 #define TASKSTACKSIZE   512
 
-Task_Struct task0Struct, readTaskStruct;
-Char task0Stack[TASKSTACKSIZE], task1Stack[TASKSTACKSIZE];
+Can can1;
+NetReceive netReceive;
+
+
+
+Task_Struct task0Struct, readTaskStruct, canTaskStruct;
+Char task0Stack[TASKSTACKSIZE], task1Stack[TASKSTACKSIZE], task2Stack[3056];
+
+void CanTaskWrapper() {
+    can1.commTask();
+}
+
 
 /*
  *  ======== heartBeatFxn ========
@@ -76,6 +93,8 @@ Void heartBeatFxn(UArg arg0, UArg arg1)
             GPIO_toggle(i);
         }
         uint32_t value = readADC();
+        can1.sendMessage(1, "Hello\0", 6);
+
     }
 }
 
@@ -96,7 +115,7 @@ Void readDigitalInputs(){
  *  ======== main ========
  */
 int main(void){
-    Task_Params taskParams, taskParams2;
+    Task_Params taskParams, taskParams2, taskParams3;
     /* Call board init functions */
     Board_initGeneral();
     Board_initEMAC();
@@ -108,12 +127,12 @@ int main(void){
     // Board_initUSB(Board_USBDEVICE);
     // Board_initUSBMSCHFatFs();
     // Board_initWatchdog();
-    // Board_initWiFi();
 
 
     //PortFunctionInit();
 
     initADC();
+
 
 
     /* Construct heartBeat Task  thread */
@@ -140,10 +159,31 @@ int main(void){
     System_printf("System up.");
     System_flush();
 
+    uint32_t ui32SysClock = SysCtlClockFreqSet(SYSCTL_XTAL_25MHZ | SYSCTL_OSC_MAIN | SYSCTL_USE_PLL | SYSCTL_CFG_VCO_480, 120000000);
+    System_printf("Clock: %d %d\n", ui32SysClock, SysCtlClockGet());
+
+
+    can1.init();
+    //can1.registerNetReceive(&netReceive);
+
+
+    Task_Params_init(&taskParams3);
+    taskParams3.stackSize = 3056;
+    taskParams3.stack = &task2Stack;
+    taskParams3.priority = 4;
+
+    Task_construct(&canTaskStruct, (Task_FuncPtr)CanTaskWrapper, &taskParams3, NULL);
+
+
+
+
     /* Start BIOS */
     BIOS_start();
+    can1.sendMessage(1, "Hello\0", 6);
 
     while(1);
+
+
 
     return (0);
 }

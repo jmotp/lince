@@ -39,6 +39,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define xdc__nolocalstring
+
 #include <xdc/std.h>
 #include <xdc/runtime/Error.h>
 #include <xdc/runtime/System.h>
@@ -327,7 +329,7 @@ void EK_TM4C129EXL_initEMAC(void)
         System_abort("Change the macAddress variable to match your boards MAC sticker");
     }
 
-    //EMACPHY(EMAC0_BASE, EMAC_PHY_ADDR, EPHY_, ui16Data)
+    //EMACPHYExtendedWrite(EMAC0_BASE, EMAC_PHY_ADDR, 0x025, 0x8);
 
     GPIOPinConfigure(GPIO_PK4_EN0LED0);  /* EK_TM4C129EXL_USR_D3 */
     GPIOPinConfigure(GPIO_PK6_EN0LED1);  /* EK_TM4C129EXL_USR_D4 */

@@ -21,7 +21,7 @@
 #include "inc/hw_ints.h"
 #include "driverlib/uart.h"
 #include <utils/uartstdio.h>
-#include <cstring>
+#include <string.h>
 #include "Args/Types.h"
 #include "Args/ArgumentArray.h"
 

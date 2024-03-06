@@ -175,12 +175,12 @@ void EK_TM4C129EXL_initGeneral(void)
  *  =============================== ADC ================================
  *
  */
-
+/**
 #if defined(__TI_COMPILER_VERSION__)
 #pragma DATA_SECTION(ADC_config, ".const:ADC_config")
 #pragma DATA_SECTION(adcHWAttrs, ".const:adcHWAttrs")
 #endif
-
+**/
 #include <driverlib/adc.h>
 
 
@@ -234,6 +234,14 @@ uint32_t readADC(){
    System_flush();
 
    return ADCValues[0];
+}
+
+uint32_t readGPIO(LINCE_GPIOName pinNumber){
+    return GPIO_read(pinNumber);
+}
+
+uint32_t writeGPIO(LINCE_GPIOName pinNumber, bool value){
+    return GPIO_write(pinNumber,value);
 }
 
 

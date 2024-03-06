@@ -66,7 +66,7 @@ extern "C" {
  *  @def    EK_TM4C129EXL_GPIOName
  *  @brief  Enum of LED names on the EK_TM4C129EXL dev board
  */
-typedef enum EK_TM4C129EXL_GPIOName {
+typedef enum LINCE_GPIOName {
     DBG_LED_1 = 0,
     DBG_LED_2,
     DIGITAL_OUT_1_1,
@@ -86,11 +86,14 @@ typedef enum EK_TM4C129EXL_GPIOName {
     DIGITAL_IN_7,
     DIGITAL_IN_8,
     LINCE_GPIOCOUNT
-} EK_TM4C129EXL_GPIOName;
+} LINCE_GPIOName;
 
 
 int initADC();
 uint32_t readADC();
+
+uint32_t readGPIO(LINCE_GPIOName pinNumber);
+uint32_t writeGPIO(LINCE_GPIOName pinNumber, bool value);
 
 /*!
  *  @def    EK_TM4C129EXL_I2CName

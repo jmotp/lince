@@ -31,7 +31,7 @@ public:
     virtual UInt16 open( UInt16 destId, Boolean twoWay, UInt16& maxPayloadLen, UInt16& commId)=0;
     virtual UInt16 openQoS( UInt16 destId, Boolean twoWay, UInt16& maxPayloadLen, UInt16& commId, QosParams& qosParams)=0;
     virtual UInt16 close( UInt16 commId)=0;
-    virtual UInt16 readMsg( UInt16 commId, TimeDuration timeout, UInt32& len, OctetArray& payload, Boolean& last)=0;
+    virtual UInt16 readMsg(UInt16 commId, TimeDuration timeout, UInt32& len, OctetArray& payload, Boolean& last)=0;
     virtual UInt16 readRsp(UInt16 commId, TimeDuration timeout, UInt16 msgId, UInt32 maxLen, OctetArray& payload, Boolean& last)=0;
     virtual UInt16 writeMsg(UInt16 commId, TimeDuration timeout, OctetArray payload,  Boolean last, UInt16 msgId)=0;
     virtual UInt16 writeRsp(UInt16 commId, TimeDuration timeout, OctetArray payload,  Boolean last)=0;

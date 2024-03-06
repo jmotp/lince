@@ -277,6 +277,8 @@ Argument::Argument(const Argument & arg)
         case Octet_Array_TC: new(&this->_valueOctetArray) string(arg._valueOctetArray);
         break;
         case UInt32_Array_TC: new(&this->_valueUInt32Array) vector<UInt32>(arg._valueUInt32Array);
+        break;
+        case Boolean_TC: this->_valueBoolean = arg._valueBoolean;
         //printf("String pointer %p\n", _valueOctetArray);
      }
     // TODO Auto-generated constructor stub

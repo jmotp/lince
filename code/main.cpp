@@ -41,12 +41,21 @@
 
 #include <driverlib/sysctl.h>
 #include <ModuleCommunications/Can.h>
+#include <ModuleCommunications/Tcp.h>
+
 #include "ModuleCommunications/NetReceive.h"
+
+#include <ti/sysbios/knl/Clock.h>
 
 /* BIOS Header files */
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Task.h>
 
+#include <xdc/std.h>
+#include <xdc/cfg/global.h>
+#include <xdc/runtime/Error.h>
+#include <xdc/runtime/Memory.h>
+#include <xdc/runtime/System.h>
 
 
 /* TI-RTOS Header files */
@@ -64,17 +73,20 @@
 #include "boardDefinition/pinCfg.h"
 #define TASKSTACKSIZE   512
 
+#include "TransducerServices/TIM.h"
+
 Can can1;
 NetReceive netReceive;
 
 
 
-Task_Struct task0Struct, readTaskStruct, canTaskStruct;
-Char task0Stack[TASKSTACKSIZE], task1Stack[TASKSTACKSIZE], task2Stack[3056];
+Task_Struct task0Struct, readTaskStruct, canTaskStruct, timTaskStruct, tcpTaskStruct;
+Char task0Stack[TASKSTACKSIZE], task1Stack[TASKSTACKSIZE], task2Stack[3056], timTaskStack[2048], tcpTaskStack[10240];
 
 void CanTaskWrapper() {
     can1.commTask();
 }
+
 
 
 /*
@@ -93,7 +105,7 @@ Void heartBeatFxn(UArg arg0, UArg arg1)
             GPIO_toggle(i);
         }
         uint32_t value = readADC();
-        can1.sendMessage(1, "Hello\0", 6);
+        //can1.sendMessage(1, "Hello\0", 6);
 
     }
 }
@@ -111,11 +123,26 @@ Void readDigitalInputs(){
     }
 }
 
+TIM tim;
+
+void timTaskWrapper() {
+    tim.task();
+}
+
+
+void clockHandler1(){
+
+
+    //Task_yield();
+}
+
+
+
 /*
  *  ======== main ========
  */
 int main(void){
-    Task_Params taskParams, taskParams2, taskParams3;
+    Task_Params taskParams, taskParams2, taskParams3, timTaskParams;
     /* Call board init functions */
     Board_initGeneral();
     Board_initEMAC();
@@ -128,10 +155,25 @@ int main(void){
     // Board_initUSBMSCHFatFs();
     // Board_initWatchdog();
 
-
+    Error_Block eb;
     //PortFunctionInit();
+    Error_init(&eb);
+
 
     initADC();
+
+
+    Clock_Params clockParams;
+    Clock_Params_init(&clockParams);
+     clockParams.period = 10;/* every 10 Clock ticks */
+     clockParams.startFlag = TRUE;/* start immediately */
+     Clock_Handle myClk0 = Clock_create((Clock_FuncPtr)clockHandler1, 2000, &clockParams, &eb);
+     if (myClk0 == NULL) {
+     System_abort("Clock0 create failed");
+     }
+     Clock_tickStart();
+    /* Construct BIOS objects */
+
 
 
 
@@ -140,13 +182,22 @@ int main(void){
     taskParams.arg0 = 1000;
     taskParams.stackSize = 512;
     taskParams.stack = &task0Stack;
-    Task_construct(&task0Struct, (Task_FuncPtr)heartBeatFxn, &taskParams, NULL);
+    timTaskParams.priority = 2;
+    //Task_construct(&task0Struct, (Task_FuncPtr)heartBeatFxn, &taskParams, NULL);
+
+    /* Construct clock Task thread */
+    Task_Params_init(&timTaskParams);
+    timTaskParams.stackSize = 2048;
+    timTaskParams.stack = &timTaskStack;
+    timTaskParams.priority = 1;
+    //Task_construct(&timTaskStruct, (Task_FuncPtr)timTaskWrapper, &timTaskParams, NULL);
 
 
     Task_Params_init(&taskParams2);
     taskParams2.stackSize = 512;
     taskParams2.stack = &task1Stack;
-    Task_construct(&readTaskStruct, (Task_FuncPtr)readDigitalInputs, &taskParams2, NULL);
+    timTaskParams.priority = 2;
+    //Task_construct(&readTaskStruct, (Task_FuncPtr)readDigitalInputs, &taskParams2, NULL);
 
 
 
@@ -164,27 +215,40 @@ int main(void){
 
 
     can1.init();
-    //can1.registerNetReceive(&netReceive);
+    can1.registerNetReceive(&netReceive);
 
+
+    //tcp1.init();
 
     Task_Params_init(&taskParams3);
     taskParams3.stackSize = 3056;
     taskParams3.stack = &task2Stack;
     taskParams3.priority = 4;
 
-    Task_construct(&canTaskStruct, (Task_FuncPtr)CanTaskWrapper, &taskParams3, NULL);
-
-
+    //Task_construct(&canTaskStruct, (Task_FuncPtr)CanTaskWrapper, &taskParams3, NULL);
 
 
     /* Start BIOS */
     BIOS_start();
-    can1.sendMessage(1, "Hello\0", 6);
+    //can1.sendMessage(1, "Hello\0", 6);
 
-    while(1);
+    //while(1);
 
 
 
     return (0);
+}
+
+extern "C" void startTCP(void)
+    {
+
+        Task_Params tcpTaskParams;
+        Error_Block eb;
+        Task_Params_init(&tcpTaskParams);
+        tcpTaskParams.stackSize = 10240;
+        tcpTaskParams.priority = 1;
+        tcpTaskParams.arg0 = 123;
+        Task_construct(&tcpTaskStruct,(Task_FuncPtr)initTCP, &tcpTaskParams, &eb);
+
 }
 

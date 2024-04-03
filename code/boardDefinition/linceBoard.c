@@ -231,6 +231,7 @@ uint32_t readADC(){
    for(;i<4;i++){
        System_printf("CH%d : %d ",i,ADCValues[i]);
    }
+   System_printf("\n");
    System_flush();
 
    return ADCValues[0];
@@ -347,6 +348,11 @@ void EK_TM4C129EXL_initEMAC(void)
     /* Once EMAC_init is called, EMAC_config cannot be changed */
     EMAC_init();
 }
+
+void EK_TM4C129EXL_stopEMAC(void){
+    NC_NetStop(0);
+}
+
 
 /*
  *  =============================== GPIO ===============================

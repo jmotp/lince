@@ -18,6 +18,7 @@
 #include <isotp/isotp.h>
 #include <config.h>
 #include <map>
+#include <ModuleCommunications/Can.h>
 
 /* Alloc IsoTpLink statically in RAM */
     static IsoTpLink g_link;

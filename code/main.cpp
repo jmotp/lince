@@ -44,7 +44,7 @@
 #include <ModuleCommunications/Tcp.h>
 
 #include "ModuleCommunications/NetReceive.h"
-
+#include <ModuleCommunications/NetRegistration.h>
 #include <ti/sysbios/knl/Clock.h>
 
 /* BIOS Header files */
@@ -76,7 +76,7 @@
 #include "TransducerServices/TIM.h"
 
 Can can1;
-NetReceive netReceive;
+
 
 
 
@@ -116,7 +116,7 @@ Void readDigitalInputs(){
         uint8_t read = 0;
         int i;
         for(i=DIGITAL_IN_1; i<= DIGITAL_IN_8;i++){
-            read = read << 1 | GPIO_read(i);
+            read = read << 1 | readGPIO((LINCE_GPIOName)i);
         }
         System_printf("%d\n", read);
         System_flush();
@@ -141,6 +141,12 @@ void clockHandler1(){
 /*
  *  ======== main ========
  */
+
+
+
+NetReceive netReceive;
+NetRegistration netRegistration;
+
 int main(void){
     Task_Params taskParams, taskParams2, taskParams3, timTaskParams;
     /* Call board init functions */
@@ -154,6 +160,8 @@ int main(void){
     // Board_initUSB(Board_USBDEVICE);
     // Board_initUSBMSCHFatFs();
     // Board_initWatchdog();
+
+
 
     Error_Block eb;
     //PortFunctionInit();
@@ -183,21 +191,21 @@ int main(void){
     taskParams.stackSize = 512;
     taskParams.stack = &task0Stack;
     timTaskParams.priority = 2;
-    //Task_construct(&task0Struct, (Task_FuncPtr)heartBeatFxn, &taskParams, NULL);
+    Task_construct(&task0Struct, (Task_FuncPtr)heartBeatFxn, &taskParams, NULL);
 
     /* Construct clock Task thread */
     Task_Params_init(&timTaskParams);
     timTaskParams.stackSize = 2048;
     timTaskParams.stack = &timTaskStack;
-    timTaskParams.priority = 1;
-    //Task_construct(&timTaskStruct, (Task_FuncPtr)timTaskWrapper, &timTaskParams, NULL);
+    timTaskParams.priority = 3;
+    Task_construct(&timTaskStruct, (Task_FuncPtr)timTaskWrapper, &timTaskParams, NULL);
 
 
     Task_Params_init(&taskParams2);
     taskParams2.stackSize = 512;
     taskParams2.stack = &task1Stack;
     timTaskParams.priority = 2;
-    //Task_construct(&readTaskStruct, (Task_FuncPtr)readDigitalInputs, &taskParams2, NULL);
+    Task_construct(&readTaskStruct, (Task_FuncPtr)readDigitalInputs, &taskParams2, NULL);
 
 
 
@@ -211,6 +219,7 @@ int main(void){
     System_flush();
 
     uint32_t ui32SysClock = SysCtlClockFreqSet(SYSCTL_XTAL_25MHZ | SYSCTL_OSC_MAIN | SYSCTL_USE_PLL | SYSCTL_CFG_VCO_480, 120000000);
+    //SysCtlClockSet(SYSCTL_XTAL_25MHZ | SYSCTL_OSC_MAIN | SYSCTL_USE_PLL | SYSCTL_CFG_VCO_480);
     System_printf("Clock: %d %d\n", ui32SysClock, SysCtlClockGet());
 
 
@@ -225,7 +234,7 @@ int main(void){
     taskParams3.stack = &task2Stack;
     taskParams3.priority = 4;
 
-    //Task_construct(&canTaskStruct, (Task_FuncPtr)CanTaskWrapper, &taskParams3, NULL);
+    Task_construct(&canTaskStruct, (Task_FuncPtr)CanTaskWrapper, &taskParams3, NULL);
 
 
     /* Start BIOS */

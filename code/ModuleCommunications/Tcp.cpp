@@ -43,6 +43,8 @@
             Task_exit();
         }
 
+
+
         /* Loop while we receive data */
         while (flag) {
             nbytes = recv(clientfd, (char *)buffer, TCPPACKETSIZE, 0);
@@ -171,7 +173,9 @@
     UInt16 Tcp::readMsg( UInt16 commId, TimeDuration timeout, UInt32& len, OctetArray& payload, Boolean& last){}
     UInt16 Tcp::readRsp(UInt16 commId, TimeDuration timeout, UInt16 msgId, UInt32 maxLen, OctetArray& payload, Boolean& last){}
     UInt16 Tcp::writeMsg(UInt16 commId, TimeDuration timeout, OctetArray payload,  Boolean last, UInt16 msgId){}
-    UInt16 Tcp::writeRsp(UInt16 commId, TimeDuration timeout, OctetArray payload,  Boolean last){}
+    UInt16 Tcp::writeRsp(UInt16 commId, TimeDuration timeout, OctetArray payload,  Boolean last){
+
+    }
     UInt16 Tcp::flush( UInt16 commId){}
     UInt16 Tcp::readSize( UInt16 commId, UInt32& cacheSize){}
     UInt16 Tcp::setPayloadSize( UInt16 commId, UInt32 size){}

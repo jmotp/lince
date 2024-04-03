@@ -216,6 +216,9 @@ extern void EK_TM4C129EXL_initEMAC(void);
  *  The GPIOs controlled by the GPIO module are determined by the GPIO_PinConfig
  *  variable.
  */
+
+extern void EK_TM4C129EXL_stopEMAC(void);
+
 extern void EK_TM4C129EXL_initGPIO(void);
 
 /*!

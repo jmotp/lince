@@ -40,6 +40,7 @@ extern "C" {
 #include "boardDefinition/linceBoard.h"
 
 #define Board_initEMAC              EK_TM4C129EXL_initEMAC
+#define Board_stopEMAC              EK_TM4C129EXL_stopEMAC
 #define Board_initGeneral           EK_TM4C129EXL_initGeneral
 #define Board_initGPIO              EK_TM4C129EXL_initGPIO
 #define Board_initI2C               EK_TM4C129EXL_initI2C

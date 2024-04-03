@@ -11,7 +11,6 @@
 
 
 
-
 uint32_t g_ui32MsgCount = 0;
 uint32_t g_ui32MsgBroadcastCount = 0;
 uint32_t g_bErrFlag = 0;
@@ -87,6 +86,10 @@ Can::~Can()
 #define CLASS_IS_TM4C129
 
 UInt16 Can::init(){
+    //extern NetRegistration netRegistration;
+    UInt8 newModuleId;
+    //netRegistration.registerModule(this, 0, "Can 0 Interface", &newModuleId);
+
     //SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_XTAL_16MHZ | SYSCTL_OSC_MAIN);
     //SysCtlClockSet(SYSCTL_SYSDIV_2_5 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
 
@@ -103,7 +106,6 @@ UInt16 Can::init(){
     CANInit(CAN1_BASE);
 
     //CAN bitrate 500kbps
-
 
     CANBitRateSet(CAN1_BASE, 120000000, 500000);
     //CANIntRegister(CAN1_BASE, CANIntHandler);
@@ -139,8 +141,6 @@ UInt16 Can::init(){
 
 
     isotp_init_link(&g_linkBroadcast, 0x18da0102, g_isotpSendBuf, sizeof(g_isotpSendBuf), g_isotpRecvBuf, sizeof(g_isotpRecvBuf));
-
-
     return 0;
 }
 
@@ -183,8 +183,6 @@ void Can::commTask(){
 //          }
 //          System_printf("\n");
 //          //System_flush();
-
-
            isotp_on_can_message(&g_linkBroadcast, msgReceiveBroadcastData, msgReceiveBroadcast.ui32MsgLen);
 
         }
@@ -203,7 +201,7 @@ void Can::commTask(){
          if(receivingBroadcast_ret==ISOTP_RET_OK){
              addMessage(0x00, (const char * ) receiveBroadcastBuffer , (size_t) receiveBroadcastSize);
         }
-         Task_sleep(100);
+         Task_sleep(10);
 
     }
 }
@@ -373,9 +371,6 @@ UInt16 Can::writeMsg(UInt16 commId, TimeDuration timeout, OctetArray payload, Bo
         System_flush();
 
     }
-
-
-
 }
 
 UInt16 Can::writeRsp(UInt16 commId, TimeDuration timeout, OctetArray payload,  Boolean last){
@@ -421,9 +416,6 @@ UInt16 Can::writeRsp(UInt16 commId, TimeDuration timeout, OctetArray payload,  B
         System_flush();
 
     }
-
-
-
     return 0;
 }
 
@@ -439,7 +431,6 @@ UInt16 Can::open( UInt16 destId, Boolean twoWay, UInt16& maxPayloadLen, UInt16& 
 UInt16 Can::openQoS( UInt16 destId, Boolean twoWay, UInt16& maxPayloadLen, UInt16& commId, QosParams& qosParams){}
 UInt16 Can::close( UInt16 commId){
     CanReceiveArray.erase(commId);
-
 }
 UInt16 Can::flush( UInt16 commId){}
 UInt16 Can::readSize( UInt16 commId, UInt32& cacheSize){}
@@ -453,5 +444,4 @@ UInt16 Can::lookupDestId( UInt16 commId, UInt16& destId){}
 UInt16 Can::setRemoteConfiguration( UInt16 commId, TimeDuration timeout, ArgumentArray params){}
 UInt16 Can::getRemoteConfiguration( UInt16 commId, TimeDuration timeout, ArgumentArray& params){}
 UInt16 Can::sendRemoteCommand(UInt16 commId, TimeDuration timeout, UInt8 cmdClassId, UInt8 cmdFunctionId, ArgumentArray inArgs, ArgumentArray& outArgs){}
-
 

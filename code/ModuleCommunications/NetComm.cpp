@@ -22,4 +22,5 @@ NetComm::~NetComm()
 
 UInt16 NetComm::registerNetReceive(NetReceive *netReceive){
     this->netReceive = netReceive;
+    return 0;
 }

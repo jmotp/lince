@@ -75,7 +75,11 @@ void Argument::init(TypeCode _type, void * value_ref){
             new(&this->_valueOctetArray) string(*((string*)value_ref));
           break;
         case UInt32_Array_TC:
-         new(&this->_valueUInt32Array) vector<UInt32>(*(vector<UInt32>*)value_ref);
+            new(&this->_valueUInt32Array) vector<UInt32>(*(vector<UInt32>*)value_ref);
+            break;
+        case Boolean_TC:
+            _valueBoolean = *(Boolean *)value_ref;
+            break;
         }
     //this->print();
 
@@ -107,11 +111,15 @@ Argument& Argument::operator= (const Argument& argument){
 //            System_printf("String Pointer: %d\n", argument._valueOctetArray);
 //            System_flush();
             new(&this->_valueOctetArray) string(argument._valueOctetArray);
-        break;
+            break;
         case UInt32_Array_TC:
-         new(&this->_valueUInt32Array) vector<UInt32>(argument._valueUInt32Array);
-            
-        }
+             new(&this->_valueUInt32Array) vector<UInt32>(argument._valueUInt32Array);
+             break;
+        case Boolean_TC:
+            this->_valueBoolean = argument._valueBoolean;
+            break;
+
+    }
 
     return *this;
     ;
@@ -226,6 +234,14 @@ UInt16 Argument::write(stringstream& ss){
                         swapByteOrder(arg_size);
                         ss.write((const char*)(&arg_size),2);
                         ss.write((const char*)(this->_valueOctetArray.data()),size);
+                        break;
+                    case Boolean_TC:
+                        size = sizeof(this->_valueBoolean);
+                        arg_size=size;
+                        fprintf(stdout,"Output: %d Size: %d", this->_valueBoolean, size);
+                        fflush(stdout);
+                        ss.write((const char*)(&arg_size),2);
+                        ss.write((const char*)&(this->_valueBoolean),size);
                         break;
             }
             return 0;

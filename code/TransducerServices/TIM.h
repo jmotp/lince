@@ -10,12 +10,13 @@
 
 #include <TransducerServices/TransducerChannelManager.h>
 #include <TransducerServices/SPITransducerChannel.h>
+#include <TransducerServices/DigitalInputTransducerChannel.h>
 #include <TransducerServices/CommandCodes.h>
 #include <ti/sysbios/knl/Task.h>
 #include <config.h>
 #include <xdc/runtime/Error.h>
 #include "driverlib/timer.h"
-
+#include <boardDefinition/linceBoard.h>
 #include "driverlib/adc.h"
 #include "inc/hw_adc.h"
 

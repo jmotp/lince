@@ -8,8 +8,8 @@
 #include <ModuleCommunications/Can.h>
 #include <cstdio>
 #include <ti/sysbios/hal/Hwi.h>
-
-
+#include <ti/sysbios/knl/Event.h>
+#include <xdc/cfg/global.h>
 
 uint32_t g_ui32MsgCount = 0;
 uint32_t g_ui32MsgBroadcastCount = 0;
@@ -29,6 +29,7 @@ void CANIntHandler(void)
     //If the interrupt was caused by a STATUS Interrupt
     if(ui32Status == CAN_INT_INTID_STATUS)
     {
+        Event_post(event0, Event_Id_00);
         //Save Control Flags Status & clears STATUS Interrupt
         ui32Status = CANStatusGet(CAN1_BASE, CAN_STS_CONTROL);
         //Save which Object raised the interrupt
@@ -105,16 +106,7 @@ UInt16 Can::init(){
     SysCtlPeripheralEnable(SYSCTL_PERIPH_CAN1);
     CANInit(CAN1_BASE);
 
-    //CAN bitrate 500kbps
 
-    CANBitRateSet(CAN1_BASE, 120000000, 500000);
-    //CANIntRegister(CAN1_BASE, CANIntHandler);
-    CANIntEnable(CAN1_BASE, CAN_INT_MASTER | CAN_INT_ERROR | CAN_INT_STATUS);
-    //IntEnable(INT_CAN1_TM4C129);
-    //System_printf("%d", )
-    Hwi_create(INT_CAN1_TM4C129, (ti_sysbios_hal_Hwi_FuncPtr)CANIntHandler, NULL, NULL);
-    Hwi_enableInterrupt(INT_CAN1_TM4C129);
-    CANEnable(CAN1_BASE);
 
 
     //msgReceive CAN Object Config
@@ -140,7 +132,21 @@ UInt16 Can::init(){
     msgReceiveBroadcast.pui8MsgData = msgReceiveBroadcastData;
 
 
+
     isotp_init_link(&g_linkBroadcast, 0x18da0102, g_isotpSendBuf, sizeof(g_isotpSendBuf), g_isotpRecvBuf, sizeof(g_isotpRecvBuf));
+
+
+    //CAN bitrate 500kbps
+
+    CANBitRateSet(CAN1_BASE, 120000000, 500000);
+    //CANIntRegister(CAN1_BASE, CANIntHandler);
+    CANIntEnable(CAN1_BASE, CAN_INT_MASTER | CAN_INT_ERROR | CAN_INT_STATUS);
+    //IntEnable(INT_CAN1_TM4C129);
+    //System_printf("%d", )
+    Hwi_create(INT_CAN1_TM4C129, (ti_sysbios_hal_Hwi_FuncPtr)CANIntHandler, NULL, NULL);
+    Hwi_enableInterrupt(INT_CAN1_TM4C129);
+    CANEnable(CAN1_BASE);
+
     return 0;
 }
 
@@ -153,8 +159,8 @@ void Can::commTask(){
     UInt32 receiving_ret;
     UInt32 receivingBroadcast_ret;
     while(true){
+        Event_pend(event0,Event_Id_00,Event_Id_NONE,~0);
 
-        //System_printf("Polled\n");
         //printf("HERE\n");
         UInt32 canStatus = g_ui32MsgCount;
 //        printf(" CanSTATUS %x\n", canStatus);
@@ -201,7 +207,6 @@ void Can::commTask(){
          if(receivingBroadcast_ret==ISOTP_RET_OK){
              addMessage(0x00, (const char * ) receiveBroadcastBuffer , (size_t) receiveBroadcastSize);
         }
-         Task_sleep(10);
 
     }
 }

@@ -16,7 +16,11 @@ TIM::TIM()
     GeoLocTEDS.append(vecGeoLoc.begin(),vecGeoLoc.end());
     //SPITransducerChannel * tchannel = new SPITransducerChannel(GPIO_PIN_3);
     //SPITransducerChannel * tchannel2 = new SPITransducerChannel(GPIO_PIN_6);
-    //transducerChannelManager.registerTransducerChannel(*tchannel);
+    int i = 0;
+    for(i=DIGITAL_IN_1; i<= DIGITAL_IN_8;i++){
+        DigitalInputTransducerChannel * tchannel = new DigitalInputTransducerChannel((LINCE_GPIOName)i);
+        transducerChannelManager.registerTransducerChannel(*tchannel);
+    }
     //transducerChannelManager.registerTransducerChannel(*tchannel2);
 
 
@@ -212,6 +216,7 @@ void TIM::task(){
             if(millis - time > TIMEOUT_REGISTRATION){
                 break;
             }
+            System_flush();
         }
     }
 
@@ -248,7 +253,7 @@ void TIM::task(){
         System_flush();
 
 
-        //Task_yield();
+        Task_yield();
     }
 
 

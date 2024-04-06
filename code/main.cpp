@@ -83,7 +83,22 @@ Can can1;
 Task_Struct task0Struct, readTaskStruct, canTaskStruct, timTaskStruct, tcpTaskStruct;
 Char task0Stack[TASKSTACKSIZE], task1Stack[TASKSTACKSIZE], task2Stack[3056], timTaskStack[2048], tcpTaskStack[10240];
 
-void CanTaskWrapper() {
+extern "C" void startTCP(void)
+    {
+
+        Task_Params tcpTaskParams;
+        Error_Block eb;
+        Task_Params_init(&tcpTaskParams);
+        tcpTaskParams.stackSize = 10240;
+        tcpTaskParams.priority = 1;
+        tcpTaskParams.arg0 = 123;
+        Task_construct(&tcpTaskStruct,(Task_FuncPtr)initTCP, &tcpTaskParams, &eb);
+
+}
+
+
+
+extern "C" void CanTaskWrapper() {
     can1.commTask();
 }
 
@@ -117,6 +132,7 @@ Void readDigitalInputs(){
         int i;
         for(i=DIGITAL_IN_1; i<= DIGITAL_IN_8;i++){
             read = read << 1 | readGPIO((LINCE_GPIOName)i);
+            //System_printf("DigitalInput %d :%d\n", i,  readGPIO((LINCE_GPIOName)i));
         }
         System_printf("%d\n", read);
         System_flush();
@@ -190,21 +206,21 @@ int main(void){
     taskParams.arg0 = 1000;
     taskParams.stackSize = 512;
     taskParams.stack = &task0Stack;
-    timTaskParams.priority = 2;
+    taskParams.priority = 2;
     Task_construct(&task0Struct, (Task_FuncPtr)heartBeatFxn, &taskParams, NULL);
 
     /* Construct clock Task thread */
     Task_Params_init(&timTaskParams);
     timTaskParams.stackSize = 2048;
     timTaskParams.stack = &timTaskStack;
-    timTaskParams.priority = 3;
+    timTaskParams.priority = 2;
     Task_construct(&timTaskStruct, (Task_FuncPtr)timTaskWrapper, &timTaskParams, NULL);
 
 
     Task_Params_init(&taskParams2);
     taskParams2.stackSize = 512;
     taskParams2.stack = &task1Stack;
-    timTaskParams.priority = 2;
+    taskParams2.priority = 2;
     Task_construct(&readTaskStruct, (Task_FuncPtr)readDigitalInputs, &taskParams2, NULL);
 
 
@@ -244,20 +260,7 @@ int main(void){
     //while(1);
 
 
-
     return (0);
 }
 
-extern "C" void startTCP(void)
-    {
-
-        Task_Params tcpTaskParams;
-        Error_Block eb;
-        Task_Params_init(&tcpTaskParams);
-        tcpTaskParams.stackSize = 10240;
-        tcpTaskParams.priority = 1;
-        tcpTaskParams.arg0 = 123;
-        Task_construct(&tcpTaskStruct,(Task_FuncPtr)initTCP, &tcpTaskParams, &eb);
-
-}
 

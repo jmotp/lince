@@ -149,7 +149,6 @@ void TIM::task(){
     ArgumentArray outArgs;
     UInt32 ui32value;
     ADCSequenceDataGet(ADC0_BASE, 0, &ui32value);
-
     UInt32 random= (UInt8)ui32value;//TimerValueGet (TIMER5_BASE,TIMER_A);
     outArgs.putByIndex(0, Argument(Argument::UInt32_TC,&random));
     OctetArray payload;

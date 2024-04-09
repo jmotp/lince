@@ -67,7 +67,6 @@
 // #include <ti/drivers/UART.h>
 // #include <ti/drivers/USBMSCHFatFs.h>
 // #include <ti/drivers/Watchdog.h>
-// #include <ti/drivers/WiFi.h>
 
 #include "Board.h"
 #include "boardDefinition/pinCfg.h"
@@ -75,11 +74,8 @@
 
 #include "TransducerServices/TIM.h"
 
-Can can1;
 
-
-
-
+//Task Structs and Stack definition
 Task_Struct task0Struct, readTaskStruct, canTaskStruct, timTaskStruct, tcpTaskStruct;
 Char task0Stack[TASKSTACKSIZE], task1Stack[TASKSTACKSIZE], task2Stack[3056], timTaskStack[2048], tcpTaskStack[10240];
 
@@ -97,6 +93,8 @@ extern "C" void startTCP(void)
 }
 
 
+//Tasks cannot be instantiated using objects, so a Wrapper is used.
+Can can1;
 
 extern "C" void CanTaskWrapper() {
     can1.commTask();

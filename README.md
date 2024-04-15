@@ -1,3 +1,5 @@
+[![CC BY-NC 4.0][cc-by-nc-shield]][cc-by-nc]
+
 ![logo_inverted](https://github.com/jmotp/lince/assets/12650512/22e1eef5-df80-4261-b1af-a147acbc27b6)
 
 Firmware for the Linked Industrial Controller platform
@@ -32,4 +34,12 @@ The firmware is built around TI-RTOS (https://www.ti.com/tool/TI-RTOS-MCU).
 ![image](https://github.com/jmotp/lince/assets/12650512/bff662b7-57d5-4c93-8be2-32acbcfdbf82)
 
 
+This work is licensed under a
+[Creative Commons Attribution-NonCommercial 4.0 International License][cc-by-nc].
+
+[![CC BY-NC 4.0][cc-by-nc-image]][cc-by-nc]
+
+[cc-by-nc]: https://creativecommons.org/licenses/by-nc/4.0/
+[cc-by-nc-image]: https://licensebuttons.net/l/by-nc/4.0/88x31.png
+[cc-by-nc-shield]: https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg
 

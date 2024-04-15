@@ -11,6 +11,7 @@
 #include <TransducerServices/TransducerChannelManager.h>
 #include <TransducerServices/SPITransducerChannel.h>
 #include <TransducerServices/DigitalInputTransducerChannel.h>
+#include <TransducerServices/DigitalOutputTransducerChannel.h>
 #include <TransducerServices/CommandCodes.h>
 #include <ti/sysbios/knl/Task.h>
 #include <config.h>

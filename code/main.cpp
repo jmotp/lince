@@ -113,11 +113,11 @@ Void heartBeatFxn(UArg arg0, UArg arg1)
         Task_sleep((unsigned int)arg0);
         GPIO_toggle(Board_LED0);
         int i;
-        for(i=DIGITAL_OUT_1_1; i<= DIGITAL_OUT_2_4;i++){
+        /*for(i=DIGITAL_OUT_1_1; i<= DIGITAL_OUT_2_4;i++){
             Task_sleep(100);
             GPIO_toggle(i);
         }
-        uint32_t value = readADC();
+        uint32_t value = readADC();*/
         //can1.sendMessage(1, "Hello\0", 6);
 
     }
@@ -132,8 +132,8 @@ Void readDigitalInputs(){
             read = read << 1 | readGPIO((LINCE_GPIOName)i);
             //System_printf("DigitalInput %d :%d\n", i,  readGPIO((LINCE_GPIOName)i));
         }
-        System_printf("%d\n", read);
-        System_flush();
+        //System_printf("%d\n", read);
+        //System_flush();
     }
 }
 

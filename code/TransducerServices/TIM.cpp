@@ -21,6 +21,11 @@ TIM::TIM()
         DigitalInputTransducerChannel * tchannel = new DigitalInputTransducerChannel((LINCE_GPIOName)i);
         transducerChannelManager.registerTransducerChannel(*tchannel);
     }
+    for(i=DIGITAL_OUT_1_1; i<= DIGITAL_OUT_2_4;i++){
+
+        DigitalOutputTransducerChannel * tchannel = new DigitalOutputTransducerChannel((LINCE_GPIOName)i);
+            transducerChannelManager.registerTransducerChannel(*tchannel);
+        }
     //transducerChannelManager.registerTransducerChannel(*tchannel2);
 
 
@@ -127,6 +132,15 @@ UInt16 TIM::handleCommand(UInt16 channelId,UInt8 cmdClassId,UInt8 cmdFunctionId,
             }
 
         }
+        else if(cmdFunctionId == WRITE_TRANSDUCERCHANNEL_DATA){
+                    hasResponse=0;
+                    Argument arg;
+                    inArgs.getByIndex(1, arg);
+                    //System_printf("Command write DataSet\n");
+                    //System_flush();
+                    transducerChannel->writeDataSet(arg);
+
+                }
     }else if(cmdClassId == REGISTER_CMD){
             if(cmdFunctionId == DISCOVERY){
                 hasResponse=1;
@@ -236,7 +250,7 @@ void TIM::task(){
             UInt8 cmdClassId;
             ArgumentArray inArgs;
             codec.decodeCommand(buffer, channelId, cmdClassId, cmdFunctionId, inArgs);
-//          System_printf("Command: Channel %d Cmd %d Function %d\n",channelId,cmdClassId,cmdFunctionId);
+            //System_printf("Command: Channel %d Cmd %d Function %d\n",channelId,cmdClassId,cmdFunctionId);
             ArgumentArray outArgs;
             Boolean hasResponse =0;
             handleCommand(channelId, cmdClassId, cmdFunctionId, inArgs, hasResponse, outArgs);

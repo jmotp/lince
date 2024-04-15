@@ -23,6 +23,8 @@ Handler::~Handler()
 
 UInt16 Handler::handleCommand(UInt16 channelId,UInt8 cmdClassId,UInt8 cmdFunctionId,ArgumentArray inArgs, Boolean& hasResponse,ArgumentArray& outArgs){
     extern TransducerChannelManager transducerChannelManager;
+    System_printf("Command Received %d %d\n", cmdClassId, cmdFunctionId);
+    System_flush();
     if(cmdClassId == COMMON_CMD){
         if(cmdFunctionId == READ_TEDS_SEGMENT){
             hasResponse = 1;
@@ -50,6 +52,14 @@ UInt16 Handler::handleCommand(UInt16 channelId,UInt8 cmdClassId,UInt8 cmdFunctio
             outArgs.putByIndex(0, Argument(Argument::UInt32_TC,(void*)&offset));
             outArgs.putByIndex(1, arg);
             System_printf("Handling Here\n");
+        }else if(cmdFunctionId == WRITE_TRANSDUCERCHANNEL_DATA){
+            hasResponse=0;
+            Argument arg;
+            inArgs.getByIndex(1, arg);
+            System_printf("Command write DataSet\n");
+            System_flush();
+            transducerChannel->writeDataSet(arg);
+
         }
     }else if(cmdClassId == 0x80){
             if(cmdFunctionId == 0x02){
